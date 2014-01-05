@@ -73,9 +73,9 @@ class PDF(BaseGeneratorDefinition):
 		if o.align == 'left':
 			self.reportlabcanvas.drawString(self.X(o.x), self.Y(o.y), o.text)
 		elif o.align == 'center':
-			self.reportlabcanvas.drawCentredString(self.Units(o.x), self.Units(o.y), o.text)
+			self.reportlabcanvas.drawCentredString(self.X(o.x), self.Y(o.y), o.text)
 		elif o.align == 'right':
-			self.reportlabcanvas.drawRightString(self.Units(o.x), self.Units(o.y), o.text)
+			self.reportlabcanvas.drawRightString(self.X(o.x), self.Y(o.y), o.text)
 
 
 		return ['']
