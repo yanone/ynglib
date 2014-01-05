@@ -92,6 +92,9 @@ class Canvas:
 		
 	def TextPath(self, font, text, fontsize, x, y, features = [], align = 'left', fillcolor = RGBA(R=0, G=0, B=0), strokecolor = None, strokewidth = 1.0):
 		self.objects.append(TextPath(font, text, fontsize, x, y, features, align, fillcolor, strokecolor, strokewidth))
+		
+	def Text(self, font, text, fontsize, x, y, lineheight = None, features = [], align = 'left', fillcolor = RGBA(R=0, G=0, B=0), strokecolor = None, strokewidth = 1.0):
+		self.objects.append(Text(font, text, fontsize, x, y, lineheight, features, align, fillcolor, strokecolor, strokewidth))
 
 	def Rect(self, x, y, width, height, fillcolor = None, strokecolor = None, strokewidth = 1.0):
 		self.objects.append( Rect(self, x, y, width, height, fillcolor, strokecolor, strokewidth) )
