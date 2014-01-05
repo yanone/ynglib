@@ -54,8 +54,14 @@ class PDF(BaseGeneratorDefinition):
 		self.reportlabcanvas.setFillColorCMYK(color.C / 100.0, color.M / 100.0, color.Y / 100.0, color.K / 100.0)
 
 	def setStrokeColor(self, color):
-		self.reportlabcanvas.setFillColorCMYK(color.C / 100.0, color.M / 100.0, color.Y / 100.0, color.K / 100.0)
+		self.reportlabcanvas.setStrokeColorCMYK(color.C / 100.0, color.M / 100.0, color.Y / 100.0, color.K / 100.0)
 
+	def Line(self, o):
+		self.reportlabcanvas.setLineWidth(o.strokewidth)
+		self.setStrokeColor(o.strokecolor)
+		self.reportlabcanvas.line(self.X(o.x1), self.Y(o.y1), self.X(o.x2), self.Y(o.y2))
+		return ['']
+		
 	def Text(self, o):
 		
 		from reportlab.pdfbase import pdfmetrics

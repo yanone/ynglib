@@ -105,7 +105,9 @@ class Canvas:
 		self.generator.canvas = self
 		self.generator.Generate()
 
-
+	def Line(self, x1, y1, x2, y2, strokecolor = None, strokewidth = 1.0):
+		self.objects.append( Line(x1, y1, x2, y2, strokecolor, strokewidth) )
+		
 
 ########################################
 # graphic shapes
@@ -122,6 +124,17 @@ class Rect:
 		self.strokewidth = strokewidth
 	def Generate(self, generator):
 		return generator.Rect(self)
+
+class Line:
+	def __init__(self, x1, y1, x2, y2, strokecolor, strokewidth):
+		self.x1 = x1
+		self.y1 = y1
+		self.x2 = x2
+		self.y2 = y2
+		self.strokecolor = strokecolor
+		self.strokewidth = strokewidth
+	def Generate(self, generator):
+		return generator.Line(self)
 
 class Text:
 	def __init__(self, font, text, fontsize, x, y, lineheight = None, features = [], align = 'left', fillcolor = RGBA(R=0, G=0, B=0), strokecolor = None, strokewidth = 1.0):
@@ -199,6 +212,7 @@ class TextPath:
 			returnlist.append((font.comp.glyphSet[glyphrecord.glyphName], glyphrecord))
 
 		return returnlist
+
 
 
 

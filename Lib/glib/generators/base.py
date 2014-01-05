@@ -8,6 +8,9 @@ class BaseGeneratorDefinition:
 	def Rect(self, o = None):
 		if self.canvas.strict: raise NotImplementedError
 
+	def Line(self, o = None):
+		if self.canvas.strict: raise NotImplementedError
+
 	def BezierPathBegin(self, o = None):
 		if self.canvas.strict: raise NotImplementedError
 
