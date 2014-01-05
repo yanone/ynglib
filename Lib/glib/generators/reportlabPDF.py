@@ -7,7 +7,7 @@ class PDF(BaseGeneratorDefinition):
 	def __init__(self, path):
 		self.path = path
 		
-		
+		self.registeredFonts = []
 		
 		# we know some glyphs are missing, suppress warnings
 		import reportlab.rl_config
@@ -37,6 +37,19 @@ class PDF(BaseGeneratorDefinition):
 		"""
 		return value * self.unit
 
+	def X(self, x):
+		u"""\
+		Recalculate units to mm
+		"""
+		return x * self.unit
+
+	def Y(self, y):
+		u"""\
+		Recalculate units to mm
+		"""
+#		return (self.canvas.height + y * -1) * self.unit
+		return (-y + self.canvas.height) * self.unit
+
 	def setFillColor(self, color):
 		self.reportlabcanvas.setFillColorCMYK(color.C / 100.0, color.M / 100.0, color.Y / 100.0, color.K / 100.0)
 
@@ -47,16 +60,18 @@ class PDF(BaseGeneratorDefinition):
 		
 		from reportlab.pdfbase import pdfmetrics
 		from reportlab.pdfbase.ttfonts import TTFont
-		pdfmetrics.registerFont(TTFont('_font', o.font))
+		if not os.path.basename(o.font) in self.registeredFonts:
+			pdfmetrics.registerFont(TTFont(os.path.basename(o.font), o.font))
+			self.registeredFonts.append(os.path.basename(o.font))
 
 		if o.fillcolor:
 			self.setFillColor(o.fillcolor)
 		if o.strokecolor:
 			self.setStrokeColor(o.strokecolor)
 
-		self.reportlabcanvas.setFont('_font', o.fontsize)
+		self.reportlabcanvas.setFont(os.path.basename(o.font), o.fontsize)
 		if o.align == 'left':
-			self.reportlabcanvas.drawString(self.Units(o.x), self.Units(o.y), o.text)
+			self.reportlabcanvas.drawString(self.X(o.x), self.Y(o.y), o.text)
 		elif o.align == 'center':
 			self.reportlabcanvas.drawCentredString(self.Units(o.x), self.Units(o.y), o.text)
 		elif o.align == 'right':
@@ -72,7 +87,7 @@ class PDF(BaseGeneratorDefinition):
 			self.setStrokeColor(o.strokecolor)
 		if o.strokewidth:
 			self.reportlabcanvas.setLineWidth(o.strokewidth)
-		self.reportlabcanvas.rect(self.Units(o.x), self.Units(o.y), self.Units(o.width), self.Units(o.height), fill=1)
+		self.reportlabcanvas.rect(self.X(o.x), self.Y(o.y), self.X(o.width), self.X(o.height), fill=1)
 		return ['']
 
 	def BezierPathBegin(self, o):
@@ -90,15 +105,15 @@ class PDF(BaseGeneratorDefinition):
 		return ['']
 
 	def BezierPathMoveTo(self, o):
-		self.bezierpath.moveTo(self.Units(o.x), self.Units(o.y))
+		self.bezierpath.moveTo(self.X(o.x), self.Y(o.y))
 		return ['']
 
 	def BezierPathLineTo(self, o):
-		self.bezierpath.lineTo(self.Units(o.x), self.Units(o.y))
+		self.bezierpath.lineTo(self.X(o.x), self.Y(o.y))
 		return ['']
 
 	def BezierPathCurveTo(self, o):
-		self.bezierpath.curveTo(self.Units(o.x1), self.Units(o.y1), self.Units(o.x2), self.Units(o.y2), self.Units(o.x3), self.Units(o.y3))
+		self.bezierpath.curveTo(self.X(o.x1), self.Y(o.y1), self.X(o.x2), self.Y(o.y2), self.X(o.x3), self.Y(o.y3))
 		return ['']
 
 	def BezierPathClosePath(self, o):

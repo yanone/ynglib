@@ -20,7 +20,9 @@ class SaveAsSVG(BaseGeneratorDefinition):
 		
 		# Walk objects
 		for o in self.canvas.objects:
-			output.extend(o.Generate(self))
+			#print o
+			if o.Generate(self):
+				output.extend(o.Generate(self))
 
 		output.append('</svg>')
 		
