@@ -1,6 +1,7 @@
 from base import BaseGeneratorDefinition
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
+import reportlab, os
 
 class PDF(BaseGeneratorDefinition):
 	def __init__(self, path):
@@ -44,18 +45,41 @@ class PDF(BaseGeneratorDefinition):
 
 	def Text(self, o):
 		
+#		def RegisterTTFont(internalname, folder, ttf):
+		from reportlab.pdfbase import pdfmetrics
 		from reportlab.pdfbase.ttfonts import TTFont
-		pdfmetrics.registerFont(TTFont('_font', o.font))
-		canvas.setFont('_font', o.fontsize)
+#			pdfmetrics.registerFont(TTFont(internalname, os.path.join(folder, ttf)))
+#			pdfmetrics.registerFont(TTFont(internalname, os.path.join(folder, ttf)))
+#
+#		justFace = pdfmetrics.EmbeddedType1Face(afmFile, pfbFile)
+
+#		from reportlab.pdfbase import pdfmetrics
+
+#		afmFile = os.path.join(os.path.dirname(o.font), os.path.splitext(os.path.basename(o.font))[0] + '.afm')
+#		pfbFile = os.path.join(os.path.dirname(o.font), os.path.splitext(os.path.basename(o.font))[0] + '.pfb')
+#		justFace = pdfmetrics.EmbeddedType1Face(afmFile, pfbFile)
+#		pdfmetrics.registerTypeFace(justFace)
+#		justFont = pdfmetrics.Font('Nitti', 'Nitti', 'WinAnsiEncoding')
+#		pdfmetrics.registerFont(justFont)
+		
+		#RegisterTTFont('Nitti', os.path.dirname(o.font), os.path.basename(o.font))
+		
+		pdfmetrics.registerFont(TTFont('Nitti', o.font))
+		
+#		from reportlab.pdfbase.ttfonts import TTFont
+#		from reportlab.pdfbase import pdfmetrics
+#		reportlab.rl_config.TTFSearchpath = os.path.dirname(o.font)
+#		pdfmetrics.registerFont(TTFont('_font', os.path.basename(o.font)))
+#		self.reportlabcanvas.setFont('Nitti', o.fontsize)
 
 		if o.fillcolor:
 			self.setFillColor(o.fillcolor)
 		if o.strokecolor:
 			self.setStrokeColor(o.strokecolor)
 
-		self.reportlabcanvas.setFont(o.font, o.fontsize)
+		self.reportlabcanvas.setFont('Nitti', o.fontsize)
 		if o.align == 'left':
-			self.reportlabcanvas.drawString(self.Units(o.x), self.Units(o.y), o.text):
+			self.reportlabcanvas.drawString(self.Units(o.x), self.Units(o.y), o.text)
 		elif o.align == 'center':
 			self.reportlabcanvas.drawCentredString(self.Units(o.x), self.Units(o.y), o.text)
 		elif o.align == 'right':
