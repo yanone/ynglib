@@ -1,6 +1,3 @@
-import sys
-print sys.path
-
 import glib
 reload(glib)
 from glib.fonts import CompositorFont
