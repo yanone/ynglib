@@ -21,7 +21,7 @@ class PDF(BaseGeneratorDefinition):
 		
 		# BG Color
 		if self.canvas.bgcolor.A != 0:
-			self.reportlabcanvas.setFillColorCMYK(self.canvas.bgcolor.C, self.canvas.bgcolor.M, self.canvas.bgcolor.Y, self.canvas.bgcolor.K)
+			self.reportlabcanvas.setFillColorRGB(self.canvas.bgcolor.R, self.canvas.bgcolor.G, self.canvas.bgcolor.B)
 			self.reportlabcanvas.rect(0, 0, self.canvas.width, self.canvas.height, fill=1)
 		
 		# Walk objects
@@ -51,10 +51,10 @@ class PDF(BaseGeneratorDefinition):
 		return (-y + self.canvas.height) * self.unit
 
 	def setFillColor(self, color):
-		self.reportlabcanvas.setFillColorCMYK(color.C / 100.0, color.M / 100.0, color.Y / 100.0, color.K / 100.0)
+		self.reportlabcanvas.setFillColorRGB(color.R, color.G, color.B)
 
 	def setStrokeColor(self, color):
-		self.reportlabcanvas.setStrokeColorCMYK(color.C / 100.0, color.M / 100.0, color.Y / 100.0, color.K / 100.0)
+		self.reportlabcanvas.setStrokeColorCMYK(color.R, color.G, color.B)
 
 	def Line(self, o):
 		self.reportlabcanvas.setLineWidth(o.strokewidth)
