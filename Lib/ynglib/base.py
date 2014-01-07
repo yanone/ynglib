@@ -1,73 +1,12 @@
 ########################################
 # Color
 
-import ynlib.colors
+from import ynlib.colors import Color
 import time
 from ynlib.maths import Interpolate
 
-class RGBA:
-	def __init__(self, hex = None, R = None, G = None, B = None, A = 1.0):
-		if hex:
-			self.R, self.G, self.B = ynlib.colors.HextoRGB(hex)
-			self.hex = hex
-		else:
-			self.R = R
-			self.G = G
-			self.B = B
-			self.updateHex()
-		self.A = A
-	
-	def updateHex(self):
-			self.hex = ynlib.colors.RGBtoHex((self.R, self.G, self.B)).upper()
-
-	def __add__(self, other):
-		u"""\
-		Darken by float 0...1
-		"""
-		if isinstance(other, float):
-			return RGBA(R=Interpolate(self.R, 1, other), G=Interpolate(self.G, 1, other), B=Interpolate(self.B, 1, other))
-
-	def __sub__(self, other):
-		u"""\
-		Lighten by float 0...1
-		"""
-		if isinstance(other, float):
-			return RGBA(R=Interpolate(self.R, 0, other), G=Interpolate(self.G, 0, other), B=Interpolate(self.B, 0, other))
-	
-	def __repr__(self):
-		return "<RGBA %s %s %s>" % (self.R, self.G, self.B)
-
-class CMYK:
-	def __init__(self, C, M, Y, K, A = 1.0):
-		u"""\
-		CMYK values from 0 to 100
-		"""
-		self.C = C
-		self.M = M
-		self.Y = Y
-		self.K = K
-		self.A = A
-
-	def __repr__(self):
-		return "<CMYK %s %s %s %s>" % (self.C, self.M, self.Y, self.K)
-
-	def __sub__(self, other):
-		u"""\
-		Darken by float 0...1
-		"""
-		if isinstance(other, float):
-			return CMYK(Interpolate(self.C, 100, other), Interpolate(self.M, 100, other), Interpolate(self.Y, 100, other), Interpolate(self.K, 100, other))
-
-	def __add__(self, other):
-		u"""\
-		Lighten by float 0...1
-		"""
-		if isinstance(other, float):
-			return CMYK(Interpolate(self.C, 0, other), Interpolate(self.M, 0, other), Interpolate(self.Y, 0, other), Interpolate(self.K, 0, other))
-
-
 class Canvas:
-	def __init__(self, width, height, units, bgcolor = RGBA(R=0, G=0, B=0, A=0), strict = False, title = None):
+	def __init__(self, width, height, units, bgcolor = Color(hex='FFFFFF'), strict = False, title = None):
 		self.width = width
 		self.height = height
 		self.units = units
@@ -90,10 +29,10 @@ class Canvas:
 		"""
 		self.objects.append(object)
 		
-	def TextPath(self, font, text, fontsize, x, y, features = [], align = 'left', fillcolor = RGBA(R=0, G=0, B=0), strokecolor = None, strokewidth = 1.0):
+	def TextPath(self, font, text, fontsize, x, y, features = [], align = 'left', fillcolor = Color(hex='000000'), strokecolor = None, strokewidth = 1.0):
 		self.objects.append(TextPath(font, text, fontsize, x, y, features, align, fillcolor, strokecolor, strokewidth))
 		
-	def Text(self, font, text, fontsize, x, y, lineheight = None, features = [], align = 'left', fillcolor = RGBA(R=0, G=0, B=0), strokecolor = None, strokewidth = 1.0):
+	def Text(self, font, text, fontsize, x, y, lineheight = None, features = [], align = 'left', fillcolor = Color(hex='000000'), strokecolor = None, strokewidth = 1.0):
 		self.objects.append(Text(font, text, fontsize, x, y, lineheight, features, align, fillcolor, strokecolor, strokewidth))
 
 	def Rect(self, x, y, width, height, fillcolor = None, strokecolor = None, strokewidth = 1.0):
@@ -137,7 +76,7 @@ class Line:
 		return generator.Line(self)
 
 class Text:
-	def __init__(self, font, text, fontsize, x, y, lineheight = None, features = [], align = 'left', fillcolor = RGBA(R=0, G=0, B=0), strokecolor = None, strokewidth = 1.0):
+	def __init__(self, font, text, fontsize, x, y, lineheight = None, features = [], align = 'left', fillcolor = Color(hex='000000'), strokecolor = None, strokewidth = 1.0):
 		self.font = font
 		self.text = text
 		self.fontsize = fontsize
@@ -154,7 +93,7 @@ class Text:
 		return generator.Text(self)
 	
 class TextPath:
-	def __init__(self, font, text, fontsize, x, y, features = [], align = 'left', fillcolor = RGBA(R=0, G=0, B=0), strokecolor = None, strokewidth = 1.0):
+	def __init__(self, font, text, fontsize, x, y, features = [], align = 'left', fillcolor = Color(hex='000000'), strokecolor = None, strokewidth = 1.0):
 		self.font = font
 		self.text = text
 		self.fontsize = fontsize
