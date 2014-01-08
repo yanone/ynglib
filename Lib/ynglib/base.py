@@ -1,7 +1,7 @@
 ########################################
 # Color
 
-from import ynlib.colors import Color
+from ynlib.colors import Color
 import time
 from ynlib.maths import Interpolate
 

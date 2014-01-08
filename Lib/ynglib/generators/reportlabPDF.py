@@ -20,9 +20,9 @@ class PDF(BaseGeneratorDefinition):
 		output = []
 		
 		# BG Color
-		if self.canvas.bgcolor.A != 0:
+		if self.canvas.bgcolor.hex != 'FFFFFF':
 			self.reportlabcanvas.setFillColorRGB(self.canvas.bgcolor.R, self.canvas.bgcolor.G, self.canvas.bgcolor.B)
-			self.reportlabcanvas.rect(0, 0, self.canvas.width, self.canvas.height, fill=1)
+			self.reportlabcanvas.rect(0, 0, self.Units(self.canvas.width), self.Units(self.canvas.height), fill=1)
 		
 		# Walk objects
 		for o in self.canvas.objects:
@@ -54,7 +54,7 @@ class PDF(BaseGeneratorDefinition):
 		self.reportlabcanvas.setFillColorRGB(color.R, color.G, color.B)
 
 	def setStrokeColor(self, color):
-		self.reportlabcanvas.setStrokeColorCMYK(color.R, color.G, color.B)
+		self.reportlabcanvas.setStrokeColorRGB(color.R, color.G, color.B)
 
 	def Line(self, o):
 		self.reportlabcanvas.setLineWidth(o.strokewidth)
