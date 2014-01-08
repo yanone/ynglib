@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-import glib
-reload(glib)
+import ynglib
+reload(ynglib)
 
-from glib import Canvas
-from glib.fonts import CompositorFont
-from glib.generators import wxWindow, VanillaWindow
+from ynglib import Canvas
+from ynglib.fonts import CompositorFont
+from ynglib.generators import wxWindow, VanillaWindow
 
 
 c = Canvas(500, 500, 'px')
