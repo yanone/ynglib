@@ -1,9 +1,11 @@
 ########################################
 # generator definitions
 
+# origin: bottom left
 class BaseGeneratorDefinition:
 	def __init__(self):
 		self.canvas = None
+		self.Yfactor = 1.0
 
 	def Rect(self, o = None):
 		if self.canvas.strict: raise NotImplementedError
