@@ -6,8 +6,8 @@ import reportlab, os
 class PDF(BaseGeneratorDefinition):
 	def __init__(self, path):
 		self.path = path
-		
 		self.registeredFonts = []
+		self.Yfactor = 1.0
 		
 		# we know some glyphs are missing, suppress warnings
 		import reportlab.rl_config
@@ -38,23 +38,25 @@ class PDF(BaseGeneratorDefinition):
 		return value * self.unit
 
 	def X(self, x):
-		u"""\
-		Recalculate units to mm
-		"""
 		return x * self.unit
 
 	def Y(self, y):
-		u"""\
-		Recalculate units to mm
-		"""
-#		return (self.canvas.height + y * -1) * self.unit
-		return (-y + self.canvas.height) * self.unit
+		return (y) * self.unit
+#		return (y * self.Yfactor + self.canvas.height) * self.unit
 
 	def setFillColor(self, color):
-		self.reportlabcanvas.setFillColorRGB(color.R/color.max, color.G/color.max, color.B/color.max)
+		if color.type == 'RGB':
+			self.reportlabcanvas.setFillColorRGB(color.R/color.max, color.G/color.max, color.B/color.max)
+		elif color.type == 'CMYK':
+			self.reportlabcanvas.setFillColorCMYK(color.C/color.max, color.M/color.max, color.Y/color.max, color.K/color.max)
 
 	def setStrokeColor(self, color):
-		self.reportlabcanvas.setStrokeColorRGB(color.R/color.max, color.G/color.max, color.B/color.max)
+		if color.type == 'RGB':
+			self.reportlabcanvas.setStrokeColorRGB(color.R/color.max, color.G/color.max, color.B/color.max)
+		elif color.type == 'CMYK':
+			self.reportlabcanvas.setStrokeColorCMYK(color.C/color.max, color.M/color.max, color.Y/color.max, color.K/color.max)
+
+#		self.reportlabcanvas.setStrokeColorRGB(color.R/color.max, color.G/color.max, color.B/color.max)
 
 	def Line(self, o):
 		self.reportlabcanvas.setLineWidth(o.strokewidth)
