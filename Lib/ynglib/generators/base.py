@@ -34,6 +34,15 @@ class BaseGeneratorDefinition:
 	def Text(self, o = None):
 		if self.canvas.strict: raise NotImplementedError
 
+	def TextArea(self, o = None):
+		if self.canvas.strict: raise NotImplementedError
+
+	def Image(self, o = None):
+		if self.canvas.strict: raise NotImplementedError
+
+	def NewPage(self, o = None):
+		if self.canvas.strict: raise NotImplementedError
+
 	def Generate(self):
 		pass
 

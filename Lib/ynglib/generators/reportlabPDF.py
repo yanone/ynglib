@@ -41,7 +41,7 @@ class PDF(BaseGeneratorDefinition):
 		return x * self.unit
 
 	def Y(self, y):
-		return (y) * self.unit
+		return (self.canvas.height - y) * self.unit
 #		return (y * self.Yfactor + self.canvas.height) * self.unit
 
 	def setFillColor(self, color):
@@ -79,14 +79,48 @@ class PDF(BaseGeneratorDefinition):
 
 		self.reportlabcanvas.setFont(os.path.basename(o.font), o.fontsize)
 		if o.align == 'left':
-			self.reportlabcanvas.drawString(self.X(o.x), self.Y(o.y), o.text)
+			self.reportlabcanvas.drawString(self.X(o.x), self.Y(o.y) - o.lineheight, o.text)
 		elif o.align == 'center':
-			self.reportlabcanvas.drawCentredString(self.X(o.x), self.Y(o.y), o.text)
+			self.reportlabcanvas.drawCentredString(self.X(o.x), self.Y(o.y) - o.lineheight, o.text)
 		elif o.align == 'right':
-			self.reportlabcanvas.drawRightString(self.X(o.x), self.Y(o.y), o.text)
+			self.reportlabcanvas.drawRightString(self.X(o.x), self.Y(o.y) - o.lineheight, o.text)
 
 
 		return ['']
+
+
+	def TextArea(self, o):
+
+		# Fonts
+		from reportlab.pdfbase import pdfmetrics
+		from reportlab.pdfbase.ttfonts import TTFont
+		if not os.path.basename(o.font) in self.registeredFonts:
+			pdfmetrics.registerFont(TTFont(os.path.basename(o.font), o.font))
+			self.registeredFonts.append(os.path.basename(o.font))
+
+
+		t = self.reportlabcanvas.beginText(self.X(o.x), self.Y(o.y) - o.lineheight)
+
+		t.setFont(os.path.basename(o.font), o.fontsize)
+
+		t.setTextRenderMode(0) # Fill
+
+		for line in o.text.split('\n'):
+			text = line
+			t.textLine(text)
+		
+		self.reportlabcanvas.drawText(t)
+		return ['']
+
+
+	def Image(self, o):
+		self.reportlabcanvas.drawInlineImage(o.path, self.X(o.x), self.Y(o.y) - o.height * self.unit, self.X(o.width), o.height * self.unit)
+		return ['']
+
+	def NewPage(self, o):
+		self.reportlabcanvas.showPage()
+		return ['']
+
 
 	def Rect(self, o):
 		if o.fillcolor:
