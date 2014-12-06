@@ -10,6 +10,9 @@ class BaseGeneratorDefinition:
 	def Rect(self, o = None):
 		if self.canvas.strict: raise NotImplementedError
 
+	def Ellipse(self, o = None):
+		if self.canvas.strict: raise NotImplementedError
+
 	def Line(self, o = None):
 		if self.canvas.strict: raise NotImplementedError
 

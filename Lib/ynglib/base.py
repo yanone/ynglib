@@ -5,18 +5,18 @@ from ynlib.colors import Color
 import time, os
 from ynlib.maths import Interpolate
 from ynlib.system import Execute
+from ynlib.strings import smartString
 
 class Canvas(object):
-	def __init__(self, width, height, units, bgcolor = Color(hex='FFFFFF'), strict = False, title = None):
+	def __init__(self, width, height, units, bgcolor = Color(hex='FFFFFF'), strict = False, title = None, author = None):
 		self.width = width
 		self.height = height
 		self.units = units
 		self.bgcolor = bgcolor
 		self.objects = []
 		self.strict = strict
-		self.title = title
-		if not self.title:
-			self.title = "glib canvas created on %s" % (time.time())
+		self.title = title or "glib canvas created on %s" % (time.time())
+		self.author = author
 	
 	def Clear(self):
 		u"""\
@@ -47,7 +47,10 @@ class Canvas(object):
 		return t
 
 	def Rect(self, x, y, width, height, fillcolor = None, strokecolor = None, strokewidth = 1.0):
-		self.objects.append( Rect(self, x, y, width, height, fillcolor, strokecolor, strokewidth) )
+		self.objects.append( Rect(x, y, width, height, fillcolor, strokecolor, strokewidth) )
+
+	def Ellipse(self, x, y, width, height, fillcolor = None, strokecolor = None, strokewidth = 1.0):
+		self.objects.append( Ellipse(x, y, width, height, fillcolor, strokecolor, strokewidth) )
 	
 	def Generate(self, generator):
 		
@@ -69,6 +72,12 @@ class Canvas(object):
 		Convert pt to mm.
 		"""
 		return pt * 0.352777778
+
+	def mm2pt(self, mm):
+		u"""\
+		Convert mm to ts.
+		"""
+		return mm / 0.352777778
 
 		
 
@@ -94,6 +103,18 @@ class Rect(object):
 	def Generate(self, generator):
 		return generator.Rect(self)
 
+class Ellipse(object):
+	def __init__(self, x, y, width, height, fillcolor, strokecolor, strokewidth):
+		self.x = x
+		self.y = y
+		self.width = width
+		self.height = height
+		self.fillcolor = fillcolor
+		self.strokecolor = strokecolor
+		self.strokewidth = strokewidth
+	def Generate(self, generator):
+		return generator.Ellipse(self)
+
 class Line(object):
 	def __init__(self, x1, y1, x2, y2, strokecolor, strokewidth):
 		self.x1 = x1
@@ -108,7 +129,7 @@ class Line(object):
 class Text(object):
 	def __init__(self, font, text, fontsize, x, y, lineheight, features, align, fillcolor, strokecolor, strokewidth):
 		self.font = font
-		self.text = text
+		self.text = smartString(text)
 		self.fontsize = fontsize
 		self.lineheight = lineheight or self.fontsize * 1.2
 		self.x = x
@@ -136,7 +157,12 @@ class TextArea(object):
 		self.width = width
 		self.height = height
 		self.charactersPerLine = charactersPerLine
-		self.text = SimpleTextWrap(text, self.charactersPerLine)
+		
+		if self.charactersPerLine:
+			self.text = SimpleTextWrap(smartString(text), self.charactersPerLine)
+		else:
+			self.text = smartString(text)
+
 		self.features = features
 		self.fillcolor = fillcolor
 		self.strokecolor = strokecolor
@@ -219,7 +245,7 @@ class Image(object):
 class TextPath(object):
 	def __init__(self, font, text, fontsize, x, y, features, align, fillcolor, strokecolor, strokewidth):
 		self.font = font
-		self.text = text
+		self.text = smartString(text)
 		self.fontsize = fontsize
 		self.x = x
 		self.y = y

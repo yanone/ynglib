@@ -1,7 +1,11 @@
+import reportlab
+reload(reportlab)
+import reportlab.pdfgen
+reload(reportlab.pdfgen)
+
 from base import BaseGeneratorDefinition
-from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
-import reportlab, os
+import os
 
 class PDF(BaseGeneratorDefinition):
 	def __init__(self, path):
@@ -15,7 +19,7 @@ class PDF(BaseGeneratorDefinition):
 
 	def Generate(self):
 		self.unit = mm
-		self.reportlabcanvas = canvas.Canvas(self.path, pagesize=(self.Units(self.canvas.width), self.Units(self.canvas.height)))
+		self.reportlabcanvas = reportlab.pdfgen.canvas.Canvas(self.path, pagesize=(self.Units(self.canvas.width), self.Units(self.canvas.height)))
 		
 		output = []
 		
@@ -79,11 +83,11 @@ class PDF(BaseGeneratorDefinition):
 
 		self.reportlabcanvas.setFont(os.path.basename(o.font), o.fontsize)
 		if o.align == 'left':
-			self.reportlabcanvas.drawString(self.X(o.x), self.Y(o.y) - o.lineheight, o.text)
+			self.reportlabcanvas.drawString(self.X(o.x), self.Y(o.y) - o.fontsize + .17*o.fontsize, o.text)
 		elif o.align == 'center':
-			self.reportlabcanvas.drawCentredString(self.X(o.x), self.Y(o.y) - o.lineheight, o.text)
+			self.reportlabcanvas.drawCentredString(self.X(o.x), self.Y(o.y) - o.fontsize + .17*o.fontsize, o.text)
 		elif o.align == 'right':
-			self.reportlabcanvas.drawRightString(self.X(o.x), self.Y(o.y) - o.lineheight, o.text)
+			self.reportlabcanvas.drawRightString(self.X(o.x), self.Y(o.y) - o.fontsize + .17*o.fontsize, o.text)
 
 
 		return ['']
@@ -98,8 +102,13 @@ class PDF(BaseGeneratorDefinition):
 			pdfmetrics.registerFont(TTFont(os.path.basename(o.font), o.font))
 			self.registeredFonts.append(os.path.basename(o.font))
 
+		if o.fillcolor:
+			self.setFillColor(o.fillcolor)
+		if o.strokecolor:
+			self.setStrokeColor(o.strokecolor)
 
-		t = self.reportlabcanvas.beginText(self.X(o.x), self.Y(o.y) - o.lineheight)
+
+		t = self.reportlabcanvas.beginText(self.X(o.x), self.Y(o.y) - o.fontsize + .17*o.fontsize)
 
 		t.setFont(os.path.basename(o.font), o.fontsize)
 
@@ -125,12 +134,39 @@ class PDF(BaseGeneratorDefinition):
 	def Rect(self, o):
 		if o.fillcolor:
 			self.setFillColor(o.fillcolor)
+			fill = 1
+		else:
+			fill = 0
 		if o.strokecolor:
 			self.setStrokeColor(o.strokecolor)
+			stroke = 1
+		else:
+			stroke = 0
 		if o.strokewidth:
 			self.reportlabcanvas.setLineWidth(o.strokewidth)
-		self.reportlabcanvas.rect(self.X(o.x), self.Y(o.y), self.X(o.width), self.X(o.height), fill=1)
+
+		self.reportlabcanvas.rect(self.X(o.x), self.Y(o.y + o.height), self.X(o.width), o.height * self.unit, fill = fill, stroke = stroke)
+
 		return ['']
+
+	def Ellipse(self, o):
+		if o.fillcolor:
+			self.setFillColor(o.fillcolor)
+			fill = 1
+		else:
+			fill = 0
+		if o.strokecolor:
+			self.setStrokeColor(o.strokecolor)
+			stroke = 1
+		else:
+			stroke = 0
+		if o.strokewidth:
+			self.reportlabcanvas.setLineWidth(o.strokewidth)
+
+		self.reportlabcanvas.ellipse(self.X(o.x), self.Y(o.y + o.height), self.X(o.x + o.width), self.Y(o.y), fill = fill, stroke = stroke)
+
+		return ['']
+
 
 	def BezierPathBegin(self, o):
 		if o.fillcolor:
