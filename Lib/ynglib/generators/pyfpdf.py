@@ -69,6 +69,15 @@ class PDF(BaseGeneratorDefinition):
 		self.pdf.set_xy(o.x, o.y)
 		self.pdf.write(self.canvas.pt2mm(o.lineheight), txt = o.text)
 		
+	def Line(self, o):
+		if o.strokecolor:
+			self.SetStrokeColor(o.strokecolor)
+		if o.strokewidth:
+			self.pdf.set_line_width(self.canvas.pt2mm(o.strokewidth))
+
+		self.pdf.line(o.x1, o.y1, o.x2, o.y2)
+
+
 	def Rect(self, o):
 		if o.fillcolor:
 			self.SetFillColor(o.fillcolor)
