@@ -1,4 +1,4 @@
-import compositor, time
+import time
 
 
 
@@ -8,6 +8,7 @@ maxcompositorfontfiles = 50
 
 
 def CompositorFont(fontfilepath):
+	import compositor
 	from operator import itemgetter
 
 	global compositorfontfiles
@@ -37,3 +38,8 @@ class CompositorObject(Font):
 	def __init__(self, path):
 		self.path = path
 		self.comp = compositor.Font(path)
+
+class OpenTypeFont(Font):
+	def __init__(self, path):
+		self.path = path
+		self.installed = False

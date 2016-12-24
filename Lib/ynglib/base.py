@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 ########################################
 # Color
 
@@ -17,6 +19,8 @@ class Canvas(object):
 		self.strict = strict
 		self.title = title or "glib canvas created on %s" % (time.time())
 		self.author = author
+
+		self.mm = 2.834645669291339
 	
 	def Clear(self):
 		u"""\
