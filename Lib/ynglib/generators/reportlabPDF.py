@@ -1,7 +1,8 @@
 import reportlab
-reload(reportlab)
+#reload(reportlab)
 import reportlab.pdfgen
-reload(reportlab.pdfgen)
+import reportlab.pdfgen.canvas
+##reload(reportlab.pdfgen)
 
 from base import BaseGeneratorDefinition
 from reportlab.lib.units import mm

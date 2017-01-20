@@ -4,7 +4,7 @@
 # Color
 
 from ynlib.colors import Color
-import time, os
+import time, os, math
 from ynlib.maths import Interpolate
 from ynlib.system import Execute
 from ynlib.strings import smartString
@@ -28,6 +28,13 @@ class Canvas(object):
 		"""
 		self.objects = []
 	
+	def PageNumber(self):
+		p = 1
+		for o in self.objects:
+			if o.__class__.__name__ == 'NewPage':
+				p += 1
+		return p
+
 	def append(self, object):
 		u"""\
 		Append pre-initiated object to list
@@ -37,11 +44,11 @@ class Canvas(object):
 	def TextPath(self, font, text, fontsize, x, y, features = [], align = 'left', fillcolor = Color(hex='000000'), strokecolor = None, strokewidth = 1.0):
 		self.objects.append(TextPath(font, text, fontsize, x, y, features, align, fillcolor, strokecolor, strokewidth))
 		
-	def Text(self, font, text, fontsize, x, y, lineheight = None, features = [], align = 'left', fillcolor = Color(hex='000000'), strokecolor = None, strokewidth = 1.0):
-		self.objects.append(Text(font, text, fontsize, x, y, lineheight, features, align, fillcolor, strokecolor, strokewidth))
+	def Text(self, font, text, fontsize, x, y, lineheight = None, features = [], featuresOff = [], language = None, align = 'left', fillcolor = Color(hex='000000'), strokecolor = None, strokewidth = 1.0):
+		self.objects.append(Text(font, text, fontsize, x, y, lineheight, features, featuresOff, language, align, fillcolor, strokecolor, strokewidth))
 
-	def TextArea(self, font, text, fontsize, x, y, width = None, height = None, charactersPerLine = None, lineheight = None, features = [], align = 'left', fillcolor = Color(hex='000000'), strokecolor = None, strokewidth = 1.0):
-		t = TextArea(self, font, text, fontsize, x, y, width, height, charactersPerLine, lineheight, features, align, fillcolor, strokecolor, strokewidth)
+	def TextArea(self, font, text, fontsize, x, y, width = None, height = None, charactersPerLine = None, lineheight = None, features = [], featuresOff = [], language = None, align = 'left', fillcolor = Color(hex='000000'), strokecolor = None, strokewidth = 1.0):
+		t = TextArea(self, font, text, fontsize, x, y, width, height, charactersPerLine, lineheight, features, featuresOff, language, align, fillcolor, strokecolor, strokewidth)
 		self.objects.append(t)
 		return t
 
@@ -64,6 +71,9 @@ class Canvas(object):
 
 	def Line(self, x1, y1, x2, y2, strokecolor = None, strokewidth = 1.0):
 		self.objects.append( Line(x1, y1, x2, y2, strokecolor, strokewidth) )
+
+	def Arrow(self, x1, y1, x2, y2, strokecolor = None, strokewidth = 1.0, beginning = False, end = True):
+		self.objects.append( Arrow(x1, y1, x2, y2, strokecolor, strokewidth, beginning, end) )
 		
 	def NewPage(self):
 		self.objects.append( NewPage() )
@@ -130,8 +140,92 @@ class Line(object):
 	def Generate(self, generator):
 		return generator.Line(self)
 
+class Arrow(object):
+	def __init__(self, x1, y1, x2, y2, strokecolor, strokewidth, beginning = False, end = True):
+		self.x1 = x1
+		self.y1 = y1
+		self.x2 = x2
+		self.y2 = y2
+		self.strokecolor = strokecolor
+		self.strokewidth = strokewidth
+		self.beginning = beginning
+		self.end = end
+
+		arrowHeadLengthFactor = 2
+
+		from ynlib.maths import Interpolate
+
+		# Base Line
+		self.baseline = BezierPath(None, self.strokecolor, self.strokewidth)
+		self.baseline.MoveTo(self.x1, self.y1)
+		self.baseline.LineTo(self.x2, self.y2)
+		self.baseline.ClosePath()
+
+		# Deltas
+		if self.end:
+			dx = self.x2 - self.x1
+			dy = self.y2 - self.y1
+
+			# Senkrechte links und rechts
+			psl = (self.x2 - dy, self.y2 + dx)
+			psr = (self.x2 + dy, self.y2 - dx)
+
+			# Aussenpunkte
+			pal = (Interpolate(self.x1, psl[0], .5), Interpolate(self.y1, psl[1], .5))
+			par = (Interpolate(self.x1, psr[0], .5), Interpolate(self.y1, psr[1], .5))
+
+			# Länge
+			normallaenge = math.sqrt((self.x2 - pal[0])**2 + (self.y2 - pal[1])**2)
+			laenge = self.strokewidth * arrowHeadLengthFactor
+
+			# finalepunkte
+			pfl = (self.x2 - (self.x2 - pal[0]) / normallaenge * laenge, self.y2 - (self.y2 - pal[1]) / normallaenge * laenge)
+			pfr = (self.x2 - (self.x2 - par[0]) / normallaenge * laenge, self.y2 - (self.y2 - par[1]) / normallaenge * laenge)
+
+			self.endarrowhead = BezierPath(None, self.strokecolor, self.strokewidth)
+			self.endarrowhead.MoveTo(pfl[0], pfl[1])
+			self.endarrowhead.LineTo(self.x2, self.y2)
+			self.endarrowhead.LineTo(pfr[0], pfr[1])
+
+		if self.beginning:
+
+			dx = self.x1 - self.x2
+			dy = self.y1 - self.y2
+
+			# Senkrechte links und rechts
+			psl = (self.x1 - dy, self.y1 + dx)
+			psr = (self.x1 + dy, self.y1 - dx)
+
+			# Aussenpunkte
+			pal = (Interpolate(self.x2, psl[0], .5), Interpolate(self.y2, psl[1], .5))
+			par = (Interpolate(self.x2, psr[0], .5), Interpolate(self.y2, psr[1], .5))
+
+			# Länge
+			normallaenge = math.sqrt((self.x1 - pal[0])**2 + (self.y1 - pal[1])**2)
+			laenge = self.strokewidth * arrowHeadLengthFactor
+
+			# finalepunkte
+			pfl = (self.x1 - (self.x1 - pal[0]) / normallaenge * laenge, self.y1 - (self.y1 - pal[1]) / normallaenge * laenge)
+			pfr = (self.x1 - (self.x1 - par[0]) / normallaenge * laenge, self.y1 - (self.y1 - par[1]) / normallaenge * laenge)
+
+			self.beginningarrowhead = BezierPath(None, self.strokecolor, self.strokewidth)
+			self.beginningarrowhead.MoveTo(pfl[0], pfl[1])
+			self.beginningarrowhead.LineTo(self.x1, self.y1)
+			self.beginningarrowhead.LineTo(pfr[0], pfr[1])
+
+
+	def Generate(self, generator):
+
+		_list = []
+		_list.extend(self.baseline.Generate(generator))
+		if self.beginning:
+			_list.extend(self.beginningarrowhead.Generate(generator))
+		if self.end:
+			_list.extend(self.endarrowhead.Generate(generator))
+		return _list
+
 class Text(object):
-	def __init__(self, font, text, fontsize, x, y, lineheight, features, align, fillcolor, strokecolor, strokewidth):
+	def __init__(self, font, text, fontsize, x, y, lineheight, features, featuresOff, language, align, fillcolor, strokecolor, strokewidth):
 		self.font = font
 		self.text = smartString(text)
 		self.fontsize = fontsize
@@ -139,6 +233,8 @@ class Text(object):
 		self.x = x
 		self.y = y
 		self.features = features
+		self.featuresOff = featuresOff
+		self.language = language
 		self.fillcolor = fillcolor
 		self.strokecolor = strokecolor
 		self.strokewidth = strokewidth
@@ -147,8 +243,12 @@ class Text(object):
 	def Generate(self, generator):
 		return generator.Text(self)
 
+	def __repr__(self):
+		return '<Text "%s">' % self.text[:80]
+
+
 class TextArea(object):
-	def __init__(self, parent, font, text, fontsize, x, y, width, height, charactersPerLine, lineheight, features, align, fillcolor, strokecolor, strokewidth):
+	def __init__(self, parent, font, text, fontsize, x, y, width, height, charactersPerLine, lineheight, features, featuresOff, language, align, fillcolor, strokecolor, strokewidth):
 
 		from ynlib.strings import SimpleTextWrap
 
@@ -168,6 +268,8 @@ class TextArea(object):
 			self.text = smartString(text)
 
 		self.features = features
+		self.featuresOff = featuresOff
+		self.language = language
 		self.fillcolor = fillcolor
 		self.strokecolor = strokecolor
 		self.strokewidth = strokewidth
@@ -178,6 +280,9 @@ class TextArea(object):
 
 	def Generate(self, generator):
 		return generator.TextArea(self)
+
+	def __repr__(self):
+		return '<TextArea "%s">' % self.text[:80].replace('\n', '\\n')
 
 
 class Image(object):
