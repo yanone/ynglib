@@ -2,20 +2,20 @@ from base import BaseGeneratorDefinition
 
 
 class SaveAsSVG(BaseGeneratorDefinition):
-	def __init__(self, path):
+	def __init__(self, path = None):
 		self.path = path
 	
 	def Generate(self):
 		
 		output = []
 		
-		output.append('<?xml version="1.0" encoding="utf-8"?>')
-		output.append('<!-- Generator: glib by Yanone -->')
-		output.append('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">')
+#		output.append('<?xml version="1.0" encoding="utf-8"?>')
+#		output.append('<!-- Generator: glib by Yanone -->')
+#		output.append('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">')
 		output.append('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="' + str(self.canvas.width) + str(self.canvas.units) + '" height="' + str(self.canvas.height) + str(self.canvas.units) + '">')
 
 		# BG Color
-		if self.canvas.bgcolor.A != 0:
+		if self.canvas.bgcolor and self.canvas.bgcolor.A != 0:
 			output.append('<rect x="-10" y="-10" width="%s" height="%s" fill="#%s" fill-opacity="%s" />' % (self.canvas.width + 20, self.canvas.height + 20, self.canvas.bgcolor.hex, self.canvas.bgcolor.A))
 		
 		# Walk objects
@@ -26,15 +26,16 @@ class SaveAsSVG(BaseGeneratorDefinition):
 
 		output.append('</svg>')
 		
-		from ynlib.files import WriteToFile
-		from ynlib.system import Execute
-		WriteToFile(self.path, ''.join(map(str, output)))
-		# Compress
-		if self.path.endswith('.svgz'):
-#			print self.path
-			Execute('gzip "%s"' % (self.path))
-			Execute('mv "%s.gz" "%s"' % (self.path, self.path))
-#			print 'gezipped'
+		if self.path:
+			from ynlib.files import WriteToFile
+			from ynlib.system import Execute
+			WriteToFile(self.path, ''.join(map(str, output)))
+			# Compress
+			if self.path.endswith('.svgz'):
+				Execute('gzip "%s"' % (self.path))
+				Execute('mv "%s.gz" "%s"' % (self.path, self.path))
+		else:
+			return ''.join(map(str, output))
 
 	def Rect(self, o):
 		output = '<rect x="%s" y="%s" width="%s" height="%s"' % (o.x, self.canvas.height - o.height - o.y, o.width, o.height)

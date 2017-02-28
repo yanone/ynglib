@@ -67,7 +67,7 @@ class Canvas(object):
 		
 		self.generator = generator
 		self.generator.canvas = self
-		self.generator.Generate()
+		return self.generator.Generate()
 
 	def Line(self, x1, y1, x2, y2, strokecolor = None, strokewidth = 1.0):
 		self.objects.append( Line(x1, y1, x2, y2, strokecolor, strokewidth) )
