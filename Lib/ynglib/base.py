@@ -346,7 +346,8 @@ class Image(object):
 		
 		i = generator.Image(self)
 		
-		os.remove(self.croppedPath)
+		if self.croppedPath:
+			os.remove(self.croppedPath)
 		
 		return i
 
