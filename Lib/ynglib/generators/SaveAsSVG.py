@@ -9,9 +9,9 @@ class SaveAsSVG(BaseGeneratorDefinition):
 		
 		output = []
 		
-#		output.append('<?xml version="1.0" encoding="utf-8"?>')
-#		output.append('<!-- Generator: glib by Yanone -->')
-#		output.append('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">')
+		output.append('<?xml version="1.0" encoding="utf-8"?>')
+		output.append('<!-- Generator: glib by Yanone -->')
+		output.append('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">')
 		output.append('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="' + str(self.canvas.width) + str(self.canvas.units) + '" height="' + str(self.canvas.height) + str(self.canvas.units) + '">')
 
 		# BG Color
