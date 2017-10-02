@@ -20,6 +20,9 @@ class PDF(BaseGeneratorDefinition):
 	
 	def Generate(self):
 		self.pdf = fpdf.FPDF('P' if self.canvas.height > self.canvas.width else 'L', self.canvas.units, (self.canvas.width, self.canvas.height))
+
+		self.pdf.set_auto_page_break(True, margin = 0.0)
+
 		self.pdf.add_page()
 		self.pdf.set_title(self.canvas.title)
 		if self.canvas.author:
@@ -30,6 +33,7 @@ class PDF(BaseGeneratorDefinition):
 			#output.extend(o.Generate(self))
 			o.Generate(self)
 
+		self.pdf.set_display_mode('fullpage')
 		self.pdf.close()
 		
 		# Save file
@@ -59,15 +63,25 @@ class PDF(BaseGeneratorDefinition):
 
 		self.SetFont(o.font, o.fontsize)
 		self.SetTextColor(o.fillcolor)
-		self.pdf.text(o.x, o.y + self.canvas.pt2mm(o.fontsize - .17 * o.fontsize), o.text)
+		if o.align == 'right':
+			self.pdf.set_xy(0, o.y)
+			self.pdf.multi_cell(o.x, self.canvas.pt2mm(o.lineheight), o.text, align = o.align.replace('left', 'L').replace('right', 'R').replace('center', 'C').replace('justified', 'J'))
+		else:
+			self.pdf.set_xy(o.x, o.y)
+			self.pdf.multi_cell(0, self.canvas.pt2mm(o.lineheight), o.text, align = o.align.replace('left', 'L').replace('right', 'R').replace('center', 'C').replace('justified', 'J'))
 
 	def TextArea(self, o):
 
 		self.SetFont(o.font, o.fontsize)
 		self.SetTextColor(o.fillcolor)
-		self.pdf.set_left_margin(o.x)
-		self.pdf.set_xy(o.x, o.y)
-		self.pdf.write(self.canvas.pt2mm(o.lineheight), txt = o.text)
+		if o.align == 'right':
+			self.pdf.set_xy(0, o.y + self.canvas.pt2mm(o.fontsize - .17 * o.fontsize))
+			self.pdf.multi_cell(o.x, self.canvas.pt2mm(o.lineheight), o.text, align = o.align.replace('left', 'L').replace('right', 'R').replace('center', 'C').replace('justified', 'J'))
+		else:
+			self.pdf.set_xy(o.x, o.y + self.canvas.pt2mm(o.fontsize - .17 * o.fontsize))
+			self.pdf.multi_cell(0, self.canvas.pt2mm(o.lineheight), o.text, align = o.align.replace('left', 'L').replace('right', 'R').replace('center', 'C').replace('justified', 'J'))
+
+	TextArea = Text
 		
 	def Line(self, o):
 		if o.strokecolor:
