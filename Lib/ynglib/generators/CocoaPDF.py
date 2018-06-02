@@ -1,6 +1,6 @@
 from AppKit import NSWindow, NSView, NSRect, NSPoint, NSColor, NSBezierPath, NSGraphicsContext, NSPrintInfo, NSPrintOperation, NSMutableData, NSTitledWindowMask, NSBackingStoreNonretained
 #from AppKit import *
-from base import BaseGeneratorDefinition
+from .base import BaseGeneratorDefinition
 
 import os
 
@@ -59,7 +59,7 @@ class PDF(BaseGeneratorDefinition):
 		if color.type == 'RGB':
 			NSColor.colorWithDeviceRed_green_blue_alpha_(color.R/color.max, color.G/color.max, color.B/color.max, color.A * 100).set()
 		elif color.type == 'CMYK':
-			print 'fill CMYK'
+			print('fill CMYK')
 			NSColor.colorWithDeviceCyan_magenta_yellow_black_alpha_(color.C/color.max, color.M/color.max, color.Y/color.max, color.K/color.max, color.A * 100).set()
 
 	def setStrokeColor(self, color):

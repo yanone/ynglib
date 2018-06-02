@@ -1,7 +1,7 @@
 from fontTools.pens.basePen import BasePen
 
 class BezierPathPen(BasePen):
-	u"""\
+	"""\
 	...
 	"""
 
@@ -12,17 +12,22 @@ class BezierPathPen(BasePen):
 		self.y = y
 		self.scale = float(scale)
 
-	def _moveTo(self, (x,y)):
+	def _moveTo(self, xxx_todo_changeme):
+		(x,y) = xxx_todo_changeme
 		x = x + self.x
 		y = y + self.y	
 		self.bezierpath.MoveTo(x * self.scale, y * self.scale)
 
-	def _lineTo(self, (x,y)):
+	def _lineTo(self, xxx_todo_changeme1):
+		(x,y) = xxx_todo_changeme1
 		x = x + self.x
 		y = y + self.y	
 		self.bezierpath.LineTo(x * self.scale, y * self.scale)
 
-	def _curveToOne(self, (x1,y1), (x2,y2), (x3,y3)):
+	def _curveToOne(self, xxx_todo_changeme2, xxx_todo_changeme3, xxx_todo_changeme4):
+		(x1,y1) = xxx_todo_changeme2
+		(x2,y2) = xxx_todo_changeme3
+		(x3,y3) = xxx_todo_changeme4
 		x1 = x1 + self.x	
 		x2 = x2 + self.x	
 		x3 = x3 + self.x	

@@ -1,8 +1,8 @@
-from base import BaseGeneratorDefinition
+from .base import BaseGeneratorDefinition
 
-from nodebox import graphics
-from nodebox import util
-import nodebox
+from .nodebox import graphics
+from .nodebox import util
+from . import nodebox
 
 class NodeBox(BaseGeneratorDefinition):
 	def __init__(self, nodeboxcanvas):
@@ -89,6 +89,6 @@ class NodeBox(BaseGeneratorDefinition):
 
 	def run(self, source_or_code):
 		self._initNamespace()
-		if isinstance(source_or_code, basestring):
+		if isinstance(source_or_code, str):
 			source_or_code = compile(source_or_code + "\n\n", "<Untitled>", "exec")
-		exec source_or_code in self.namespace
+		exec(source_or_code, self.namespace)

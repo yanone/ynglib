@@ -1,4 +1,4 @@
-from base import BaseGeneratorDefinition
+from .base import BaseGeneratorDefinition
 
 import vanilla
 from vanilla.test.testTools import executeVanillaTest
@@ -25,7 +25,7 @@ class VanillaWindow(BaseGeneratorDefinition):
 		# Initialize vanilla window
 		if not self.window:
 			self.window = DrawingWindow((self.canvas.width, self.canvas.height))
-			print 'window attached'
+			print('window attached')
 			
 		image = NSImage.alloc().initWithSize_((self.canvas.width, self.canvas.height))
 		image.lockFocus()
@@ -40,7 +40,7 @@ class VanillaWindow(BaseGeneratorDefinition):
 		if not self.windowOpen:
 			self.window.w.open()
 		
-		print 'generated'
+		print('generated')
 		
 
 

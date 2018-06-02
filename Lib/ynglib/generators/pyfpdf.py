@@ -1,4 +1,4 @@
-from base import BaseGeneratorDefinition
+from .base import BaseGeneratorDefinition
 import fpdf, os
 
 class PDF(BaseGeneratorDefinition):
@@ -21,7 +21,8 @@ class PDF(BaseGeneratorDefinition):
 	def Generate(self):
 		self.pdf = fpdf.FPDF('P' if self.canvas.height > self.canvas.width else 'L', self.canvas.units, (self.canvas.width, self.canvas.height))
 
-		self.pdf.set_auto_page_break(True, margin = 0.0)
+		self.pdf.set_auto_page_break(True, margin = self.canvas.margins[3])
+		self.pdf.set_margins(self.canvas.margins[0], self.canvas.margins[2], self.canvas.margins[1])
 
 		self.pdf.add_page()
 		self.pdf.set_title(self.canvas.title)

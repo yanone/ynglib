@@ -12,5 +12,5 @@ c = Canvas(500, 500, 'px')
 f = CompositorFont("/Users/yanone/Schriften/Font Produktion/Fonts/NonameSans-Regular.otf")
 c.TextPath(f, text = 'abc', fontsize = 200, x = 50, y = 50, features=['calt', 'kern', 'smcp'], align = 'left')
 
-print c.Generate(SaveAsSVG.SaveAsSVG())
+print(c.Generate(SaveAsSVG.SaveAsSVG()))
 

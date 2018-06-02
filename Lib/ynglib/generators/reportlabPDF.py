@@ -4,7 +4,7 @@ import reportlab.pdfgen
 import reportlab.pdfgen.canvas
 ##reload(reportlab.pdfgen)
 
-from base import BaseGeneratorDefinition
+from .base import BaseGeneratorDefinition
 from reportlab.lib.units import mm
 import os
 
@@ -37,7 +37,7 @@ class PDF(BaseGeneratorDefinition):
 		self.reportlabcanvas.save()
 
 	def Units(self, value):
-		u"""\
+		"""\
 		Recalculate units to mm
 		"""
 		return value * self.unit

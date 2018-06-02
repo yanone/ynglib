@@ -1,4 +1,4 @@
-from base import BaseGeneratorDefinition
+from .base import BaseGeneratorDefinition
 
 
 import objc, sys
@@ -26,7 +26,7 @@ class pygameWindow(BaseGeneratorDefinition):
 			pygame.display.set_caption("Pi Bounce")
 		
 		pygame.display.flip()
-		print 'generated'
+		print('generated')
 
 
 	def BezierPathBegin(self, o):

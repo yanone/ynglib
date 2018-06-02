@@ -14,7 +14,7 @@ def CompositorFont(fontfilepath):
 	global compositorfontfiles
 
 	# Sort
-	sortedcompositorfontfiles = sorted(compositorfontfiles.iteritems(), key=itemgetter(1))
+	sortedcompositorfontfiles = sorted(iter(compositorfontfiles.items()), key=itemgetter(1))
 	
 	if not fontfilepath in compositorfontfiles:
 		compositorfontfiles[fontfilepath] = [time.time(), CompositorObject(fontfilepath)]

@@ -10,7 +10,7 @@ start = time.time()
 from drawBot import *
 
 
-from base import BaseGeneratorDefinition
+from .base import BaseGeneratorDefinition
 from ynglib.fonts import OpenTypeFont
 from ynlib.files import WriteToFile
 
@@ -61,7 +61,7 @@ class PDF(BaseGeneratorDefinition):
 					try:
 						exec(line)
 					except:
-						print line
+						print(line)
 
 #		print '\n'.join(output)
 
@@ -142,7 +142,7 @@ class PDF(BaseGeneratorDefinition):
 			if feature in o.featuresOff:
 				features[feature] = False
 
-		if features.keys():
+		if list(features.keys()):
 			call = 'openTypeFeatures(%s)' % ', '.join(['%s=%s' % (x, features[x]) for x in features])
 			exec(call)
 			commands.append(call)
@@ -168,7 +168,7 @@ class PDF(BaseGeneratorDefinition):
 				features[feature] = False
 			if feature in o.featuresOff:
 				features[feature] = True
-		if features.keys():
+		if list(features.keys()):
 			call = 'openTypeFeatures(%s)' % ', '.join(['%s=%s' % (x, features[x]) for x in features])
 			exec(call)
 			commands.append(call)

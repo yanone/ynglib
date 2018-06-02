@@ -19,11 +19,11 @@ class Canvas(object):
 		self.strict = strict
 		self.title = title or "glib canvas created on %s" % (time.time())
 		self.author = author
-
 		self.mm = 2.834645669291339
+		self.margins = (20, 20, 20, 20) # L, R, T, B
 	
 	def Clear(self):
-		u"""\
+		"""\
 		Clear list of objects.
 		"""
 		self.objects = []
@@ -36,7 +36,7 @@ class Canvas(object):
 		return p
 
 	def append(self, object):
-		u"""\
+		"""\
 		Append pre-initiated object to list
 		"""
 		self.objects.append(object)
@@ -82,13 +82,13 @@ class Canvas(object):
 
 
 	def pt2mm(self, pt):
-		u"""\
+		"""\
 		Convert pt to mm.
 		"""
 		return pt * 0.352777778
 
 	def mm2pt(self, mm):
-		u"""\
+		"""\
 		Convert mm to ts.
 		"""
 		return mm / 0.352777778
@@ -329,7 +329,7 @@ class Image(object):
 		
 			self.croppedPath = os.path.join(os.path.dirname(self.path), 'temp.jpg')
 			self.croppedCommand = 'convert "%s" -crop %sx%s+%s+%s\! "%s"' % (self.path, int(targetPixelDimensions[0]), int(targetPixelDimensions[1]), int((self.fileDimensions[0] - targetPixelDimensions[0]) * self.position[0]), int((self.fileDimensions[1] - targetPixelDimensions[1]) * self.position[1]), self.croppedPath)
-			print self.croppedCommand
+			print(self.croppedCommand)
 		
 
 	def getWidth(self, height):
@@ -379,7 +379,7 @@ class TextPath(object):
 			_x = -self.textwidth*self.scale
 			
 		# process glyphs
-		from pens import BezierPathPen
+		from .pens import BezierPathPen
 		for glyphset, glyphrecord in self.glyphrecords:
 			pen = BezierPathPen(self.bezierpath, glyphset, (self.x + _x) / self.scale, self.y / self.scale, self.scale)
 			glyphset.draw(pen)
@@ -395,7 +395,7 @@ class TextPath(object):
 		return w
 
 	def GlyphRecords(self, font, text, features):
-		u"""\
+		"""\
 		Process a string on a font file using compositor. Returns (glyphsets, glyphrecords).
 		"""
 

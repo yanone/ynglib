@@ -1,7 +1,7 @@
 import Quartz as Q
 import CoreGraphics as C
 from AppKit import NSRect, NSPoint
-from base import BaseGeneratorDefinition
+from .base import BaseGeneratorDefinition
 
 import os
 
@@ -56,7 +56,7 @@ class PDF(BaseGeneratorDefinition):
 
 	def Text(self, o):
 
-		print C.CTFontCreateWithName
+		print(C.CTFontCreateWithName)
 
 
 		attrString = Q.CFAttributedStringCreate(Q.kCFAllocatorDefault, o.text, {})

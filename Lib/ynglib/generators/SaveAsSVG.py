@@ -1,4 +1,4 @@
-from base import BaseGeneratorDefinition
+from .base import BaseGeneratorDefinition
 
 
 class SaveAsSVG(BaseGeneratorDefinition):
